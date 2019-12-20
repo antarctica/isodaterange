@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.1 [2019-12-20]
+## Next [xxxx-xx-xx]
 
 ### Removed
 
