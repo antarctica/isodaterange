@@ -77,15 +77,17 @@ def get_date_range(d):
 
             # Fix day, if day is None
             if day is None:
-                # Use the last day of the previous month
-                # However, if month is 12, increment year too
-                if month == 12:
-                    y = year + 1
-                    m = 1
-                else:
-                    y = year
-                    m = month + 1
-                day = (datetime.date(y, m, 1) - datetime.timedelta(days=1)).day
+                # Add 32 days to the first day of the month. This should bring us
+                # into the next month
+                temp_date = datetime.date(year, month, 1) + datetime.timedelta(days=32)
+
+                # Get the first date of this new month and then subtract a single day
+                temp_date = datetime.date(temp_date.year, temp_date.month, 1) - datetime.timedelta(days=1)
+
+                # Get the day from the new temporary date
+                day = temp_date.day
+
+            # Assemble the date
             date = datetime.date(year, month, day)
         except Exception as e:
             raise ValueError("Cannot determine date from {}".format(date_string))
@@ -105,6 +107,8 @@ def get_date_range(d):
                 hour = defs["hour"]
                 minute = defs["minute"]
                 second = defs["second"]
+
+            # Aseemble the time
             time = datetime.time(hour, minute, second)
         except Exception as e:
             raise ValueError("Cannot determine time from {}".format(date_string))
