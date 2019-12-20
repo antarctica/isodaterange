@@ -37,7 +37,7 @@ def get_date_range(d):
 
     # Check we have a valid number of dates (i.e. 1 or 2)
     if len(dates) == 0 or len(dates) > 2:
-        raise exceptions.APIBadRequest(
+        raise ValueError(
             "Multiple dates found in {}. Can only have one or two dates".format(d)
         )
 
@@ -86,7 +86,7 @@ def get_date_range(d):
                 day = (datetime.date(y, m, 1) - datetime.timedelta(days=1)).day
             date = datetime.date(year, month, day)
         except Exception as e:
-            raise exceptions.APIBadRequest("Cannot determine date from {}".format(date_string))
+            raise ValueError("Cannot determine date from {}".format(date_string))
 
         # Get the time part, if it exists. Otherwise, use the defaults
         try:
@@ -105,13 +105,13 @@ def get_date_range(d):
                 second = defs["second"]
             time = datetime.time(hour, minute, second)
         except Exception as e:
-            raise exceptions.APIBadRequest("Cannot determine time from {}".format(date_string))
+            raise ValueError("Cannot determine time from {}".format(date_string))
 
         # Combine the date and time
         try:
             dt[idx] = datetime.datetime.combine(date, time)
         except Exception as e:
-            raise exceptions.APIBadRequest("Cannot create date object from {}".format(date_string))
+            raise ValueError("Cannot create date object from {}".format(date_string))
 
     # Return the dates
     return dt
