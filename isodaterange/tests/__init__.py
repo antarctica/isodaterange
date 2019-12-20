@@ -67,10 +67,6 @@ class DateTests(unittest.TestCase):
         self._test_date("2019-12",
             (datetime.datetime(2019, 12, 1, 0, 0, 0), datetime.datetime(2019, 12, 31, 23, 59, 59))
         )
-    # def test_range_datetime_partial(self):
-    #     self._test_date("2012-10-24T20:00:00/21:30:00",
-    #         (datetime.datetime(2012, 10, 24, 20, 0, 0), datetime.datetime(2012, 10, 24, 21, 30, 0))
-    #     )
     def test_range_to_infinity(self):
         self._test_date("2012-10-24/..",
             (datetime.datetime(2012, 10, 24, 0, 0, 0), None)
@@ -78,6 +74,11 @@ class DateTests(unittest.TestCase):
     def test_range_from_infinity(self):
         self._test_date("../2012-10-24",
             (None, datetime.datetime(2012, 10, 24, 23, 59, 59))
+        )
+    def test_range_malformed(self):
+        self.assertRaises(
+            ValueError,
+            lambda: isodaterange.get_date_range("fake-date")
         )
     def test_duration_year(self):
         self._test_duration("P1Y")
@@ -99,3 +100,8 @@ class DateTests(unittest.TestCase):
         self._test_duration("PT12H30M5S")
     def test_duration_mixed(self):
         self._test_duration("P1Y2M10DT2H30M")
+    def test_duration_malformed(self):
+        self.assertRaises(
+            NotImplementedError,
+            lambda: isodaterange.get_date_range("Pfake-duration")
+        )
