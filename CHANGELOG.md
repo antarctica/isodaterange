@@ -1,11 +1,15 @@
 # CHANGELOG
 
-## Next [xxxx-xx-xx]
+## 0.1.1 [2020-01-16]
+
+### Fixed
+
+* Module actually installs correctly!
 
 ### Modified
 
-* (#3) - Dates with no dats are now handled more efficiently
-* 
+* (#3) - Dates with no dates are now handled more efficiently
+ 
 ### Removed
 
 * (#2) - Removed references to API project
