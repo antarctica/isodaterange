@@ -28,12 +28,25 @@ def get_date_range(d):
 
     :param string d: Date to convert
     :returns: Start and end of date range
-    :rtype: tuple
+    :rtype: list
     """
     # If no date passed, return None
     if d is None:
         return None
 
+    # If date begins with a "P" or a negative sign, it's a duration. Otherwise, it's a date
+    if d.startswith(("P", "-")):
+        return _parse_duration(d)
+    else:
+        return _parse_date(d)
+def _parse_date(d):
+    """
+    Parses a date string
+
+    :param string d: Date string to convert
+    :returns: Start and end of date range
+    :rtype: list
+    """
     # Split the values on a slash
     dates = d.split("/")
 
@@ -51,12 +64,9 @@ def get_date_range(d):
     dt = [None, None]
     for idx, date_string in enumerate(dates):
         # If date consists of two dots (..), then it's an infinite bound.
-        # If date begins with "P", it's a duration and we don't deal with those yet
         if date_string == "..":
             dt[idx] = None
             continue
-        elif date_string.startswith("P"):
-            raise NotImplementedError("Durations not supported yet")
 
         # Get the defaults
         defs = DEFAULTS["start"] if idx == 0 else DEFAULTS["end"]
@@ -121,3 +131,22 @@ def get_date_range(d):
 
     # Return the dates
     return dt
+def _parse_duration(d):
+    """
+    Parses a duration string
+
+    :param string d: Duration string to convert
+    :returns: Start and end of date range
+    :rtype: list
+    """
+    try:
+        # Get the duration
+        duration = isodate.parse_duration(d)
+
+        # Get the current date/time
+        now = datetime.datetime.now().replace(microsecond=0)
+
+        # Return tuple containing now and the date/time duration from now
+        return sorted([now, now + duration])
+    except Exception as e:
+        raise ValueError("Cannot determine duration from {}".format(d))

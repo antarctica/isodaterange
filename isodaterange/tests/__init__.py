@@ -19,10 +19,19 @@ class DateTests(unittest.TestCase):
         self.assertEqual(test_range[0], range[0])
         self.assertEqual(test_range[1], range[1])
     def _test_duration(self, duration, range=None):
-        self.assertRaises(
-            NotImplementedError,
-            lambda: isodaterange.get_date_range(duration)
-        )
+        now = datetime.datetime.now().replace(microsecond=0)
+        new_range = {}
+        for x in ["year", "month"]:
+            if x in range:
+                new_range[x] = getattr(now, x) + range[x]
+        test_date = now.replace(**new_range)
+        for x in ["day", "hour", "minute", "second"]:
+            if x in range:
+                attr = "{}s".format(x)
+                test_date += datetime.timedelta(**{ attr: range[x] })
+        test_range = isodaterange.get_date_range(duration)
+        self.assertEqual(test_range[0], min([now, test_date]))
+        self.assertEqual(test_range[1], max([now, test_date]))
     def test_range_year(self):
         self._test_date("2019",
             (datetime.datetime(2019, 1, 1, 0, 0, 0), datetime.datetime(2019, 12, 31, 23, 59, 59))
@@ -81,27 +90,29 @@ class DateTests(unittest.TestCase):
             lambda: isodaterange.get_date_range("fake-date")
         )
     def test_duration_year(self):
-        self._test_duration("P1Y")
+        self._test_duration("P1Y", { "year": 1 })
     def test_duration_month(self):
-        self._test_duration("P2M")
+        self._test_duration("P2M", { "month": 2 })
     def test_duration_day(self):
-        self._test_duration("P3D")
+        self._test_duration("P3D", { "day": 3 })
     def test_duration_week(self):
-        self._test_duration("P1W")
+        self._test_duration("P1W", { "day": 7 })
     def test_duration_date_mixed(self):
-        self._test_duration("P3Y6M4D")
+        self._test_duration("P3Y6M4D", { "year": 3, "month": 6, "day": 4 })
     def test_duration_hour(self):
-        self._test_duration("PT1H")
+        self._test_duration("PT1H", { "hour": 1 })
     def test_duration_minute(self):
-        self._test_duration("PT5M")
+        self._test_duration("PT5M", { "minute": 5 })
     def test_duration_hour(self):
-        self._test_duration("PT72S")
+        self._test_duration("PT72S", { "second": 72 })
     def test_duration_time_mixed(self):
-        self._test_duration("PT12H30M5S")
+        self._test_duration("PT12H30M5S", { "hour": 12, "minute": 30, "second": 5})
     def test_duration_mixed(self):
-        self._test_duration("P1Y2M10DT2H30M")
+        self._test_duration("P1Y2M10DT2H30M", { "year": 1, "month": 2, "day": 10, "hour": 2, "minute": 30})
+    def test_duration_negative(self):
+        self._test_duration("-P1Y", { "year": -1 })
     def test_duration_malformed(self):
         self.assertRaises(
-            NotImplementedError,
+            ValueError,
             lambda: isodaterange.get_date_range("Pfake-duration")
         )
