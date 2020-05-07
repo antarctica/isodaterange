@@ -1,10 +1,17 @@
 # CHANGELOG
 
+## 1.0.1 [2020-05-07]
+
+### Added
+
+* Added `LICENSE.md`
+
+### Changed
+
+* Mirrored repository to Github
+* Updated `setup.py` in order to upload to PyPI
+
 ## 1.0.0 [2020-04-28]
-
-### Notes
-
-* Prepared module for uploading to Github and PyPI
 
 ### Added
 
