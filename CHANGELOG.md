@@ -2,6 +2,10 @@
 
 ## 1.0.0 [2020-04-28]
 
+### Notes
+
+* Prepared module for uploading to Github and PyPI
+
 ### Added
 
 * (#1) - Added support for durations
