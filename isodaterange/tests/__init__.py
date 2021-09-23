@@ -1,7 +1,7 @@
 ################################################################################
-# tests/dates.py
+# tests/__init__.py
 #
-# Unit tests for MMP API
+# Unit tests for isodaterange
 #
 # TDBA 2019-11-15:
 #   * First version
